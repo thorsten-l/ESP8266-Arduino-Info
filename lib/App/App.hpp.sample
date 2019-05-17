@@ -1,0 +1,20 @@
+#ifndef __APP_H__
+#define __APP_H__
+
+#include <Arduino.h>
+
+#define LOG0( format ) Serial.printf( "(%ld) " format, millis())
+#define LOG1( format, x) Serial.printf( "(%ld) " format, millis(), x )
+
+#define APP_NAME "ESP8266 Arduino Info"
+#define APP_VERSION "0.3.1"
+#define APP_AUTHOR "Dr. Thorsten Ludewig <t.ludewig@gmail.com>"
+#define APP_CONFIG_FILE "/config.bin"
+
+#define OTA_HOSTNAME "esp8266-info"
+#define OTA_PASSWORD "otapass"
+
+#define WIFI_SSID "<your wifi ssid>"
+#define WIFI_PASS "<your wifi password>"
+
+#endif
