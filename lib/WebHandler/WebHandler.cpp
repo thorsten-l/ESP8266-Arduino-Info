@@ -55,8 +55,8 @@ void WebHandler::setup()
           "\"build_time\":\"%s\","
 
           "\"wifi_ssid\":\"%s\","
-          "\"wifi_num_connection\":\"%d\","
-          "\"wifi_channel\":\"%d\","
+          "\"wifi_reconnect_counter\":%d,"
+          "\"wifi_channel\":%d,"
           "\"wifi_phy_mode\":\"%s\","
           "\"wifi_mac_address\":\"%s\","
           "\"wifi_hostname\":\"%s\","
@@ -72,7 +72,7 @@ void WebHandler::setup()
           "\"free_sketch_space\":%u"
           "}",
           millis(),
-          OTA_HOSTNAME, 
+          wifiHandler.getHostname(), 
           ESP.getFullVersion().c_str(), 
           ESP.getCoreVersion().c_str(), 
           ESP.getSdkVersion(), 

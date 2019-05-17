@@ -4,6 +4,7 @@
 #include <ESP8266mDNS.h>
 #include "OtaHandler.hpp"
 #include <Util.hpp>
+#include <WifiHandler.hpp>
 
 OtaHandler otaHandler;
 
@@ -11,7 +12,7 @@ void OtaHandler::setup()
 {
   LOG0("OTA Setup started...\n");
 
-  ArduinoOTA.setHostname(OTA_HOSTNAME);
+  ArduinoOTA.setHostname(wifiHandler.getHostname());
   ArduinoOTA.setPassword(OTA_PASSWORD);
   inProgress = false;
 
