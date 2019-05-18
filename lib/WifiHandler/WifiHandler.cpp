@@ -9,6 +9,48 @@ WifiHandler wifiHandler;
 const char *phyModes[] = {"11B", "11G", "11N"};
 
 void WifiHandler::wifiInitStationMode() {
+
+  int bestChannel = 0;
+  int bestRSSI = -100;
+
+  Serial.println( "\nScanning WiFi networks...");
+  int n = WiFi.scanNetworks();
+  Serial.println( "done.");
+
+  if (n == 0)
+  {
+    Serial.println("no networks found");
+  }
+  else
+  {
+    char scannedSSID[256];
+    Serial.print(n);
+    Serial.println(" networks found");
+    
+    for (int i = 0; i < n; ++i)
+    {
+      strncpy( scannedSSID, WiFi.SSID(i).c_str(), 255 );
+      scannedSSID[255] = 0;
+
+      int scannedRSSI = WiFi.RSSI(i);
+
+      Serial.printf( "%2d: %s (%d,%d)%s\n", i+1,
+                    scannedSSID, WiFi.channel(i), scannedRSSI,
+                    (WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
+
+      if ( strcmp(WIFI_SSID, scannedSSID) == 0 && scannedRSSI > bestRSSI )
+      {
+        bestChannel = WiFi.channel(i);
+        bestRSSI = scannedRSSI;
+      }
+
+      delay( 5 );
+    }
+  }
+
+  Serial.printf( "\nBest Channel = %d\n", bestChannel );
+  Serial.printf( "Best RSSI = %d\n\n", bestRSSI );
+
   LOG0("Starting Wifi in Station Mode\n");
   sprintf( hostname, "%s-%06X", OTA_HOSTNAME, ESP.getChipId() );
   WiFi.persistent(false);
@@ -17,7 +59,7 @@ void WifiHandler::wifiInitStationMode() {
   WiFi.mode(WIFI_STA);
   WiFi.hostname(hostname);
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  WiFi.begin(WIFI_SSID, WIFI_PASS, bestChannel );
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
