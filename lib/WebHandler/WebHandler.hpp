@@ -9,6 +9,7 @@ private:
 public:
   WebHandler();
   void setup();
+  void handle();
 };
 
 extern WebHandler webHandler;

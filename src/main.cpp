@@ -15,10 +15,16 @@ static time_t timestamp = 0;
 void setup() {
   int bootDevice = getBootDevice();
 
+#ifdef WIFI_LED
   pinMode(WIFI_LED, OUTPUT);
-  pinMode(POWER_LED, OUTPUT);
   digitalWrite(WIFI_LED, HIGH);
+#endif
+#ifdef BUTTON_PIN
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+#endif
+  pinMode(POWER_LED, OUTPUT);
   digitalWrite(POWER_LED, LOW);
+
   Serial.begin(74880); // Same rate as the esp8266 bootloader
   delay(3000);         // wait for PlatformIO to start the serial monitor
 
@@ -56,16 +62,22 @@ void loop() {
     time_t currentTimestamp = millis();
 
     if ((currentTimestamp - timestamp) >= 2000) {
-      Serial.printf("\r%d", counter++);
+      Serial.printf("\r%d ", counter++);
       timestamp = currentTimestamp;
 
       alterPin(POWER_LED);
+
+#ifdef BUTTON_PIN
+  Serial.print( digitalRead(BUTTON_PIN));
+#endif
 
       if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi connection lost");
         wifiHandler.wifiInitStationMode();
       }
     }
+
+    webHandler.handle();
   }
 
   delay(20); // time for IP stack

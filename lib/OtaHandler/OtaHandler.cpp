@@ -24,7 +24,9 @@ void OtaHandler::setup()
 
   ArduinoOTA.onEnd([]()
   {
+#ifdef WIFI_LED
     digitalWrite(WIFI_LED,HIGH);
+#endif
     Serial.println("\nOTA End\n");
     otaHandler.inProgress = false;
   });
@@ -32,12 +34,16 @@ void OtaHandler::setup()
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
   {
     Serial.printf("\rOTA Progress: %u%%", (progress / (total / 100)));
+#ifdef WIFI_LED
     alterPin(WIFI_LED);
+#endif
   });
 
   ArduinoOTA.onError([](ota_error_t error)
   {
+#ifdef WIFI_LED
     digitalWrite(WIFI_LED,LOW);
+#endif
     otaHandler.inProgress = false;
     Serial.printf("OTA Error[%u]: ", error);
 

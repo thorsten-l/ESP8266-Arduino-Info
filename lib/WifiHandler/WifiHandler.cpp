@@ -63,7 +63,9 @@ void WifiHandler::wifiInitStationMode() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
+  #ifdef WIFI_LED
     alterPin(WIFI_LED);
+  #endif
     Serial.print(".");
   }
   Serial.println("\n");
@@ -90,8 +92,9 @@ void WifiHandler::wifiInitStationMode() {
   Serial.print("WiFi DNS Server   : ");
   Serial.println(WiFi.dnsIP());
   Serial.println();
-
+#ifdef WIFI_LED
   digitalWrite(WIFI_LED, LOW);
+#endif
 }
 
 int WifiHandler::getConnectCounter() {

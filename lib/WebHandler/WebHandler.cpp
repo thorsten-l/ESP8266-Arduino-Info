@@ -1,16 +1,16 @@
 #include <App.hpp>
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <Esp.h>
 #include <FS.h>
 #include <OtaHandler.hpp>
-#include <ESPAsyncWebServer.h>
 #include <WifiHandler.hpp>
 #include "WebHandler.hpp"
 
 WebHandler webHandler;
-static AsyncWebServer server(80);
+static ESP8266WebServer server(80);
 size_t fsTotalBytes;
 size_t fsUsedBytes;
 char buffer[2048];
@@ -36,8 +36,11 @@ void WebHandler::setup()
     SPIFFS.end();
   }
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      sprintf(buffer,
+  server.on("/", []() {
+
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+
+    sprintf(buffer,
           "{"
           "\"millis\":%lu,"
           "\"host_name\":\"%s\","
@@ -106,12 +109,9 @@ void WebHandler::setup()
 
     String message(buffer);
 
-    AsyncWebServerResponse *response =
-      request->beginResponse(200, "application/json", message);
-    response->addHeader("Access-Control-Allow-Origin", "*");
-    request->send(response);
-  });
-  
+    server.send(200, "application/json", message );
+  } );
+
   MDNS.addService("http", "tcp", 80);
   MDNS.addServiceTxt("http", "tcp", "path", "/");
   MDNS.addServiceTxt("http", "tcp", "fw_name", APP_NAME);
@@ -122,3 +122,7 @@ void WebHandler::setup()
   initialized = true;
 }
 
+void WebHandler::handle()
+{
+  server.handleClient();
+}

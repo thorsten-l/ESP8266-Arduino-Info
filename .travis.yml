@@ -38,6 +38,7 @@ cache:
 install:
   - pip install -U platformio
   - platformio update
+  - platformio upgrade --dev
 
 before_script:
   - cp ./lib/App/App.hpp.sample ./lib/App/App.hpp
