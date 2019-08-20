@@ -13,7 +13,7 @@ WebHandler webHandler;
 static ESP8266WebServer server(80);
 size_t fsTotalBytes;
 size_t fsUsedBytes;
-char buffer[2048];
+char buffer[3000];
 
 WebHandler::WebHandler() 
 { 
@@ -40,13 +40,21 @@ void WebHandler::setup()
 
     server.sendHeader("Access-Control-Allow-Origin", "*");
 
+    time_t now = time(nullptr);
+
     sprintf(buffer,
           "{"
           "\"millis\":%lu,"
-          "\"host_name\":\"%s\","
+          "\"utc\":%lu,"
+          "\"utc_ctime\":\"%s\","
+          "\"host_name\":\"%s.local\","
           "\"esp_full_version\":\"%s\","
           "\"esp_core_version\":\"%s\","
           "\"esp_sdk_version\":\"%s\","
+          "\"platformio_env\":\"%s\","
+          "\"platformio_platform\":\"%s\","
+          "\"platformio_framework\":\"%s\","
+          "\"arduino_board\":\"%s\","
           "\"chip_id\":\"%08X\","
           "\"cpu_freq\":\"%dMhz\","
           "\"flash_size\":%u,"
@@ -72,13 +80,21 @@ void WebHandler::setup()
           "\"spiffs_used\":%u,"
           "\"free_heap\":%u,"
           "\"sketch_size\":%u,"
-          "\"free_sketch_space\":%u"
+          "\"free_sketch_space\":%u,"
+          "\"remote_client_ip\":\"%s\","
+          "\"remote_client_port\":%u"
           "}",
           millis(),
+          now,
+          strtok( ctime(&now), "\n" ),
           wifiHandler.getHostname(), 
           ESP.getFullVersion().c_str(), 
           ESP.getCoreVersion().c_str(), 
-          ESP.getSdkVersion(), 
+          ESP.getSdkVersion(),
+          PIOENV,
+          PIOPLATFORM,
+          PIOFRAMEWORK,
+          ARDUINO_BOARD,
           ESP.getChipId(),
           ESP.getCpuFreqMHz(), 
           ESP.getFlashChipRealSize(),
@@ -104,7 +120,9 @@ void WebHandler::setup()
           fsUsedBytes,
           ESP.getFreeHeap(), 
           ESP.getSketchSize(), 
-          ESP.getFreeSketchSpace() 
+          ESP.getFreeSketchSpace(),
+          server.client().remoteIP().toString().c_str(),
+          server.client().remotePort()
         );
 
     String message(buffer);
