@@ -52,7 +52,7 @@ void WifiHandler::wifiInitStationMode() {
   Serial.printf( "Best RSSI = %d\n\n", bestRSSI );
 
   LOG0("Starting Wifi in Station Mode\n");
-  sprintf( hostname, "%s-%06X", OTA_HOSTNAME, ESP.getChipId() );
+  sprintf( hostname, "%s-%06x", OTA_HOSTNAME, ESP.getChipId() );
   WiFi.persistent(false);
   WiFi.disconnect(true);
   delay(200);
