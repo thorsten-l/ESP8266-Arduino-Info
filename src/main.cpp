@@ -47,6 +47,8 @@ void setup() {
 
   showChipInfo();
 
+  configTime(0, 0, "pool.ntp.org");
+
   wifiHandler.wifiInitStationMode();
   otaHandler.setup();
   webHandler.setup();
@@ -55,7 +57,6 @@ void setup() {
 
 void loop() {
 
-  MDNS.update();
   ArduinoOTA.handle();
 
   if (otaHandler.inProgress == false) {
