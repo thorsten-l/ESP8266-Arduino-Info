@@ -11,6 +11,7 @@
 
 static volatile unsigned int counter;
 static time_t timestamp = 0;
+struct tm timeinfo;
 
 void setup() {
   int bootDevice = getBootDevice();
@@ -47,9 +48,35 @@ void setup() {
 
   showChipInfo();
 
-  configTime(0, 0, "pool.ntp.org");
+  configTime( TIMEZONE, NTP_SERVER1, NTP_SERVER2, NTP_SERVER3 );
 
   wifiHandler.wifiInitStationMode();
+  bool timeNotSet = true;
+
+  for( int i=0; i<10; i++ )
+  {
+    time_t now = time(nullptr);
+    localtime_r( &now, &timeinfo );
+    if ( timeinfo.tm_year >= 120 )
+    {
+      timeNotSet = false;
+      break;
+    }
+  }
+
+  Serial.printf( "Time              : %4d-%02d-%02d %02d:%02d:%02d\n",
+     timeinfo.tm_year+1900, timeinfo.tm_mon+1, timeinfo.tm_mday,
+     timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec );
+  Serial.print("Timezone          : ");
+  Serial.println(getenv("TZ"));
+
+  if ( timeNotSet )
+  {
+    Serial.println("Time not set");
+  }
+
+  Serial.println();
+
   otaHandler.setup();
   webHandler.setup();
 }
