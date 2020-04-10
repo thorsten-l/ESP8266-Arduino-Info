@@ -62,6 +62,10 @@ void setup() {
       timeNotSet = false;
       break;
     }
+    else
+    {
+      delay( 1000 );
+    }
   }
 
   Serial.printf( "Time              : %4d-%02d-%02d %02d:%02d:%02d\n",

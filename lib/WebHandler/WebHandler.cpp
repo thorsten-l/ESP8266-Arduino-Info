@@ -46,7 +46,7 @@ void WebHandler::setup()
           "{"
           "\"millis\":%lu,"
           "\"utc\":%lu,"
-          "\"utc_ctime\":\"%s\","
+          "\"ctime\":\"%s\","
           "\"host_name\":\"%s.local\","
           "\"esp_full_version\":\"%s\","
           "\"esp_core_version\":\"%s\","
