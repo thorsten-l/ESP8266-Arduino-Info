@@ -7,12 +7,17 @@
 #define LOG1( format, x) Serial.printf( "(%ld) " format, millis(), x )
 
 #define APP_NAME "ESP8266 Arduino Info"
-#define APP_VERSION "0.4.2"
+#define APP_VERSION "0.5.1"
 #define APP_AUTHOR "Dr. Thorsten Ludewig <t.ludewig@gmail.com>"
 #define APP_CONFIG_FILE "/config.bin"
 
 #define OTA_HOSTNAME "esp8266-info"
 #define OTA_PASSWORD "otapass"
+
+#define TIMEZONE "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00"
+#define NTP_SERVER1 "ptbtime1.ptb.de"
+#define NTP_SERVER2 "ptbtime2.ptb.de"
+#define NTP_SERVER3 "de.pool.ntp.org"
 
 #define WIFI_SSID "<your wifi ssid>"
 #define WIFI_PASS "<your wifi password>"
