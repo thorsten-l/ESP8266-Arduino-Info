@@ -13,6 +13,11 @@ void WifiHandler::wifiInitStationMode() {
   int bestChannel = 0;
   int bestRSSI = -100;
 
+  WiFi.macAddress(mac);
+  sprintf( macAddress, "%02X:%02X:%02X:%02X:%02X:%02X", mac[0],
+                mac[1], mac[2], mac[3], mac[4], mac[5]);
+  Serial.printf("WiFi MAC Address  : %s\n", macAddress);
+
   Serial.println( "\nScanning WiFi networks...");
   int n = WiFi.scanNetworks();
   Serial.println( "done.");
@@ -51,7 +56,7 @@ void WifiHandler::wifiInitStationMode() {
   Serial.printf( "\nBest Channel = %d\n", bestChannel );
   Serial.printf( "Best RSSI = %d\n\n", bestRSSI );
 
-  LOG0("Starting Wifi in Station Mode\n");
+  LOG0("Starting Wifi in Station Mode (SSID=" WIFI_SSID ")\n");
   sprintf( hostname, "%s-%06x", OTA_HOSTNAME, ESP.getChipId() );
   WiFi.persistent(false);
   WiFi.disconnect(true);
