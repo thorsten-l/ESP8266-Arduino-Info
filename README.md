@@ -10,42 +10,69 @@ Prints out chip, sdk and wifi information using the *Arduino* framework.
 ## Console Output
 
 ```t
-ESP8266 Arduino Info - 0.3.1 - Dr. Thorsten Ludewig <t.ludewig@gmail.com>
-BUILD: May 17 2019 14:17:27
+ESP8266 Arduino Info - 0.6.0 - Dr. Thorsten Ludewig <t.ludewig@gmail.com>
+BUILD: Apr 13 2020 12:17:06
+
 Boot device = 3
 Boot mode = 1
 Boot version = 31
 
 -- CHIPINFO --
-Chip Id = 00376668
+Chip Id = XXXXXXXX
 CPU Frequency = 80MHz
 
-Flash real id:   00144068
+Flash real id:   00144051
 Flash real size: 1048576
 Flash ide  size: 1048576
 Flash chip speed: 40000000
 Flash ide mode:  DOUT
 Flash Chip configuration ok.
 
-Free Heap         : 44752
-Sketch Size       : 361088
-Free Sketch Space : 598016
+Free Heap         : 46000
+Sketch Size       : 377184
+Free Sketch Space : 581632
 
-(10052) Starting Wifi in Station Mode
-.......
+WiFi MAC Address  : XX:XX:XX:XX:XX:XX
 
-WiFi connected to : WWXXYYZZ
+Scanning WiFi networks...
+done.
+14 networks found
+ 1: XXXXXXXX (1,-71)*
+ 2: XXXXXXXX (1,-70)*
+ 3: XXXXXXXX (1,-71)*
+ 4: XXXXXXXX (1,-93)*
+ 5: XXXXXXXX (1,-94) 
+ 6: XXXXXXXX (1,-76)*
+ 7: XXXXXXXX (1,-88)*
+ 8: XXXXXXXX (6,-72)*
+ 9: XXXXXXXX (6,-71)*
+10: XXXXXXXX (1,-85)*
+11: XXXXXXXX (11,-68)*
+12: XXXXXXXX (11,-57)*
+13: XXXXXXXX (11,-67)*
+14: XXXXXXXX (11,-58)*
+
+Best Channel = 11
+Best RSSI = -57
+
+(15631) Starting Wifi in Station Mode (SSID=XXXXXXXX)
+........
+
+WiFi connected to : XXXXXXXX
 WiFi connection # : 1
-WiFi Channel      : 6
+WiFi Channel      : 11
 WiFi phy mode     : 11N
-WiFi MAC Address  : CC:50:E3:37:66:68
-WiFi Hostname     : esp8266-info-376668
-WiFi IP-Address   : 192.168.1.213
-WiFi Gateway-IP   : 192.168.1.1
+WiFi MAC Address  : XX:XX:XX:XX:XX:XX
+WiFi Hostname     : esp8266-info-xxxxxx
+WiFi IP-Address   : 192.168.XXX.XXX
+WiFi Gateway-IP   : 192.168.XXX.XXX
 WiFi Subnetmask   : 255.255.255.0
-WiFi DNS Server   : 192.168.1.5
+WiFi DNS Server   : 192.168.XXX.XXX
 
-(14544) OTA Setup started...
-(14551) HTTP server setup...
-(14556) HTTP server started
+Time              : 2020-04-13 12:17:44
+Timezone          : CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00
+
+(20442) OTA Setup started...
+(20449) HTTP server setup...
+(20455) HTTP server started
 ```
