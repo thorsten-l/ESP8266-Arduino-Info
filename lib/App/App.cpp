@@ -5,10 +5,23 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <Esp.h>
+#include <TelnetStream.h>
+
 #include <WifiHandler.hpp>
 #include <OtaHandler.hpp>
 #include <WebHandler.hpp>
 #include <Util.hpp>
+
+void appShowHeader(Stream& out)
+{
+  out.println( "\n\n" APP_NAME " - " APP_VERSION " - " APP_AUTHOR);
+  out.println("BUILD: " __DATE__ " " __TIME__);
+  out.println("PIOENV: " PIOENV );
+  out.println("PIOPLATFORM: " PIOPLATFORM );
+  out.println("PIOFRAMEWORK: " PIOFRAMEWORK );
+  out.printf( "ESP SDK Version: %s\n", ESP.getSdkVersion() );
+  out.printf( "ESP Core Version: %s\n\n", ESP.getCoreVersion().c_str() );
+}
 
 void appSetup()
 {
@@ -27,10 +40,7 @@ void appSetup()
   Serial.begin(74880); // Same rate as the esp8266 bootloader
   delay(3000);         // wait for PlatformIO to start the serial monitor
 
-  Serial.println();
-  Serial.println();
-  Serial.println(APP_NAME " - " APP_VERSION " - " APP_AUTHOR);
-  Serial.println("BUILD: " __DATE__ " " __TIME__);
+  appShowHeader( Serial );
   Serial.printf("\nBoot device = %d\n", bootDevice);
   Serial.printf("Boot mode = %d\n", ESP.getBootMode());
   Serial.printf("Boot version = %d\n", ESP.getBootVersion());
@@ -49,6 +59,9 @@ void appSetup()
   configTime( TIMEZONE, NTP_SERVER1, NTP_SERVER2, NTP_SERVER3 );
 
   wifiHandler.wifiInitStationMode();
+
+  TelnetStream.begin();
+
   bool timeNotSet = true;
   struct tm timeinfo;
 
@@ -91,11 +104,16 @@ void appLoop()
 
   ArduinoOTA.handle();
 
-  if (otaHandler.inProgress == false) {
+  if (otaHandler.inProgress == false) 
+  {
     time_t currentTimestamp = millis();
+    TelnetStream.handle();
 
-    if ((currentTimestamp - timestamp) >= 2000) {
-      Serial.printf("\r%d ", counter++);
+    if ((currentTimestamp - timestamp) >= 2000) 
+    {
+      Serial.printf("\r%d ", counter);
+      TLOG1( "counter=%d\n", counter );
+      counter++;
       timestamp = currentTimestamp;
 
       alterPin(POWER_LED);

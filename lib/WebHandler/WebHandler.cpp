@@ -5,6 +5,7 @@
 #include <ESP8266mDNS.h>
 #include <Esp.h>
 #include <FS.h>
+#include <LittleFS.h>
 #include <OtaHandler.hpp>
 #include <WifiHandler.hpp>
 #include "WebHandler.hpp"
@@ -27,13 +28,13 @@ void WebHandler::setup()
   fsTotalBytes = 0;
   fsUsedBytes = 0;
 
-  if(SPIFFS.begin())
+  if(LittleFS.begin())
   {
     FSInfo fs_info;
-    SPIFFS.info(fs_info);
+    LittleFS.info(fs_info);
     fsTotalBytes = fs_info.totalBytes;
     fsUsedBytes = fs_info.usedBytes;
-    SPIFFS.end();
+    LittleFS.end();
   }
 
   server.on("/", []() {
