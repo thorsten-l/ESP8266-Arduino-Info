@@ -44,4 +44,4 @@ before_script:
   - cp ./lib/App/App.hpp.sample ./lib/App/App.hpp
 
 script:
-  - platformio run
+  - platformio run -e d1_mini -e d1_mini_lite -e d1_mini_pro -e shelly1
