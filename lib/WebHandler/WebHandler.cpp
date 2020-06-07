@@ -108,7 +108,7 @@ const char *getJsonStatus(WiFiClient *client)
     WiFi.gatewayIP().toString().c_str(),
     WiFi.subnetMask().toString().c_str(),
     WiFi.dnsIP().toString().c_str(),
-     fsTotalBytes, 
+    fsTotalBytes, 
     fsUsedBytes,
     ESP.getFreeHeap(), 
     ESP.getSketchSize(), 
