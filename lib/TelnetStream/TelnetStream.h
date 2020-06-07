@@ -34,6 +34,9 @@ private:
   boolean disconnected();
   boolean isConnected;
 
+  void printHelp();
+  void printBanner();
+
 public:
 
   TelnetStreamClass(uint16_t port);

@@ -12,6 +12,23 @@
 #include <WebHandler.hpp>
 #include <Util.hpp>
 
+time_t appStartTime = 0l;
+char appUptimeBuffer[64];
+
+const char *appUptime()
+{
+  time_t now = time(nullptr);
+  time_t uptime = now - appStartTime;
+  int uptimeSeconds = uptime % 60;
+  int uptimeMinutes = (uptime / 60) % 60;
+  int uptimeHours = (uptime / 3600) % 24;
+  time_t uptimeDays = (uptime / 86400);
+  sprintf( appUptimeBuffer, 
+    "%ld days, %d hours, %d minutes, %d seconds",
+    uptimeDays, uptimeHours, uptimeMinutes, uptimeSeconds );
+  return appUptimeBuffer;
+}
+
 void appShowHeader(Stream& out)
 {
   out.println( "\n\n" APP_NAME " - " APP_VERSION " - " APP_AUTHOR);
@@ -72,6 +89,7 @@ void appSetup()
     if ( timeinfo.tm_year >= 120 )
     {
       timeNotSet = false;
+      appStartTime = now;
       break;
     }
     else

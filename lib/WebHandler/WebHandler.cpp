@@ -16,6 +16,108 @@ size_t fsTotalBytes;
 size_t fsUsedBytes;
 char buffer[3000];
 
+const char *getJsonStatus(WiFiClient *client)
+{
+  time_t now = time(nullptr);
+
+  int remotePort = 0;
+  char remoteAddress[32] = { 0 };
+
+  if ( client != NULL )
+  {
+    remotePort = client->remotePort();
+    strncpy( remoteAddress, client->remoteIP().toString().c_str(), 31 );
+  }
+  else
+  {
+    remotePort = server.client().remotePort();
+    strncpy( remoteAddress, server.client().remoteIP().toString().c_str(), 31 );
+  }
+  
+  sprintf(buffer,
+    "{"
+    "\"millis\":%lu,"
+    "\"utc\":%lu,"
+    "\"ctime\":\"%s\","
+    "\"uptime\":\"%s\","
+    "\"host_name\":\"%s.local\","
+    "\"esp_full_version\":\"%s\","
+    "\"esp_core_version\":\"%s\","
+    "\"esp_sdk_version\":\"%s\","
+    "\"platformio_env\":\"%s\","
+    "\"platformio_platform\":\"%s\","
+    "\"platformio_framework\":\"%s\","
+    "\"arduino_board\":\"%s\","
+    "\"chip_id\":\"%08X\","
+    "\"cpu_freq\":\"%dMhz\","
+    "\"flash_size\":%u,"
+    "\"flash_speed\":%u,"
+    "\"ide_size\":%u,"
+    "\"fw_name\":\"%s\","
+    "\"fw_version\":\"%s\","
+    "\"build_date\":\"%s\","
+    "\"build_time\":\"%s\","
+     "\"wifi_ssid\":\"%s\","
+    "\"wifi_reconnect_counter\":%d,"
+    "\"wifi_channel\":%d,"
+    "\"wifi_phy_mode\":\"%s\","
+    "\"wifi_mac_address\":\"%s\","
+    "\"wifi_hostname\":\"%s\","
+    "\"wifi_ip_address\":\"%s\","
+    "\"wifi_gateway_ip\":\"%s\","
+    "\"wifi_subnet_mask\":\"%s\","
+    "\"wifi_dns_ip\":\"%s\","
+     "\"spiffs_total\":%u,"
+    "\"spiffs_used\":%u,"
+    "\"free_heap\":%u,"
+    "\"sketch_size\":%u,"
+    "\"free_sketch_space\":%u,"
+    "\"remote_client_ip\":\"%s\","
+    "\"remote_client_port\":%u"
+    "}",
+    millis(),
+    now,
+    strtok( ctime(&now), "\n" ),
+    appUptime(),
+    wifiHandler.getHostname(), 
+    ESP.getFullVersion().c_str(), 
+    ESP.getCoreVersion().c_str(), 
+    ESP.getSdkVersion(),
+    PIOENV,
+    PIOPLATFORM,
+    PIOFRAMEWORK,
+    ARDUINO_BOARD,
+    ESP.getChipId(),
+    ESP.getCpuFreqMHz(), 
+    ESP.getFlashChipRealSize(),
+    ESP.getFlashChipSpeed(), 
+    ESP.getFlashChipSize(), 
+    APP_NAME,
+    APP_VERSION, 
+    __DATE__, 
+    __TIME__,
+     WIFI_SSID,
+    wifiHandler.getConnectCounter(),
+    WiFi.channel(),
+    wifiHandler.getPhyMode(),
+    wifiHandler.getMacAddress(),
+    WiFi.hostname().c_str(),
+    WiFi.localIP().toString().c_str(),
+    WiFi.gatewayIP().toString().c_str(),
+    WiFi.subnetMask().toString().c_str(),
+    WiFi.dnsIP().toString().c_str(),
+     fsTotalBytes, 
+    fsUsedBytes,
+    ESP.getFreeHeap(), 
+    ESP.getSketchSize(), 
+    ESP.getFreeSketchSpace(),
+    remoteAddress,
+    remotePort
+  );
+
+  return buffer;
+}
+
 WebHandler::WebHandler() 
 { 
   initialized = false; 
@@ -38,96 +140,8 @@ void WebHandler::setup()
   }
 
   server.on("/", []() {
-
     server.sendHeader("Access-Control-Allow-Origin", "*");
-
-    time_t now = time(nullptr);
-
-    sprintf(buffer,
-          "{"
-          "\"millis\":%lu,"
-          "\"utc\":%lu,"
-          "\"ctime\":\"%s\","
-          "\"host_name\":\"%s.local\","
-          "\"esp_full_version\":\"%s\","
-          "\"esp_core_version\":\"%s\","
-          "\"esp_sdk_version\":\"%s\","
-          "\"platformio_env\":\"%s\","
-          "\"platformio_platform\":\"%s\","
-          "\"platformio_framework\":\"%s\","
-          "\"arduino_board\":\"%s\","
-          "\"chip_id\":\"%08X\","
-          "\"cpu_freq\":\"%dMhz\","
-          "\"flash_size\":%u,"
-          "\"flash_speed\":%u,"
-          "\"ide_size\":%u,"
-          "\"fw_name\":\"%s\","
-          "\"fw_version\":\"%s\","
-          "\"build_date\":\"%s\","
-          "\"build_time\":\"%s\","
-
-          "\"wifi_ssid\":\"%s\","
-          "\"wifi_reconnect_counter\":%d,"
-          "\"wifi_channel\":%d,"
-          "\"wifi_phy_mode\":\"%s\","
-          "\"wifi_mac_address\":\"%s\","
-          "\"wifi_hostname\":\"%s\","
-          "\"wifi_ip_address\":\"%s\","
-          "\"wifi_gateway_ip\":\"%s\","
-          "\"wifi_subnet_mask\":\"%s\","
-          "\"wifi_dns_ip\":\"%s\","
-
-          "\"spiffs_total\":%u,"
-          "\"spiffs_used\":%u,"
-          "\"free_heap\":%u,"
-          "\"sketch_size\":%u,"
-          "\"free_sketch_space\":%u,"
-          "\"remote_client_ip\":\"%s\","
-          "\"remote_client_port\":%u"
-          "}",
-          millis(),
-          now,
-          strtok( ctime(&now), "\n" ),
-          wifiHandler.getHostname(), 
-          ESP.getFullVersion().c_str(), 
-          ESP.getCoreVersion().c_str(), 
-          ESP.getSdkVersion(),
-          PIOENV,
-          PIOPLATFORM,
-          PIOFRAMEWORK,
-          ARDUINO_BOARD,
-          ESP.getChipId(),
-          ESP.getCpuFreqMHz(), 
-          ESP.getFlashChipRealSize(),
-          ESP.getFlashChipSpeed(), 
-          ESP.getFlashChipSize(), 
-          APP_NAME,
-          APP_VERSION, 
-          __DATE__, 
-          __TIME__,
-
-          WIFI_SSID,
-          wifiHandler.getConnectCounter(),
-          WiFi.channel(),
-          wifiHandler.getPhyMode(),
-          wifiHandler.getMacAddress(),
-          WiFi.hostname().c_str(),
-          WiFi.localIP().toString().c_str(),
-          WiFi.gatewayIP().toString().c_str(),
-          WiFi.subnetMask().toString().c_str(),
-          WiFi.dnsIP().toString().c_str(),
-
-          fsTotalBytes, 
-          fsUsedBytes,
-          ESP.getFreeHeap(), 
-          ESP.getSketchSize(), 
-          ESP.getFreeSketchSpace(),
-          server.client().remoteIP().toString().c_str(),
-          server.client().remotePort()
-        );
-
-    String message(buffer);
-
+    String message(getJsonStatus(NULL));
     server.send(200, "application/json", message );
   } );
 

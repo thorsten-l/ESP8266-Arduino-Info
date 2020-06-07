@@ -1,6 +1,26 @@
 #include "App.hpp"
 #include "TelnetStream.h"
 
+extern const char *getJsonStatus(WiFiClient *client);
+
+void TelnetStreamClass::printHelp()
+{
+  TelnetStream.println( "\n\nHELP page\n"
+    "h : this help\n"
+    "b : print banner\n"
+    "s : json status\n"
+    "q,e : quit / exit \n"
+    ); 
+}
+
+void TelnetStreamClass::printBanner()
+{
+  appShowHeader(TelnetStream);
+  TelnetStream.printf( "Uptime : %s\n", appUptime() );
+  TelnetStream.printf( "Client IP-Address = %s\n\n", 
+    client.remoteIP().toString().c_str());
+}
+
 TelnetStreamClass::TelnetStreamClass(uint16_t port) :server(port) {
 }
 
@@ -13,13 +33,44 @@ void TelnetStreamClass::begin() {
 void TelnetStreamClass::handle() 
 {
   TelnetStream.available();
-
-  if (client) 
+  
+  if (client && client.connected()) 
   {  
-    if ( isConnected == false && client.connected())
+    if ( isConnected == false )
     {
       isConnected = true;
-      appShowHeader(TelnetStream);
+      printBanner();
+    }
+
+    if ( TelnetStream.available() )
+    {
+      int c = TelnetStream.read();
+
+      switch( c )
+      {
+        case 'h':
+        case 'H':
+          printHelp();
+          break;
+
+        case 'b':
+        case 'B':
+          printBanner();
+          break;
+
+        case 's':
+        case 'S':
+          TelnetStream.println(getJsonStatus(&client));
+          break;
+
+        case 'q':
+        case 'Q':
+        case 'e':
+        case 'E':
+          isConnected = false;
+          stop();
+          break;
+      }
     }
   }
 }
