@@ -12,6 +12,9 @@
 #include <WebHandler.hpp>
 #include <Util.hpp>
 
+#include <FS.h>
+#include <LittleFS.h>
+
 time_t appStartTime = 0l;
 char appUptimeBuffer[64];
 
@@ -70,6 +73,26 @@ void appSetup()
   }
 
   Serial.println();
+
+  if(LittleFS.begin())
+  {    
+    if ( !LittleFS.exists( APP_CONFIG_FILE ))
+    {
+      LOG0( "Config-File <" APP_CONFIG_FILE "> not exists.\n" );
+      LOG0( "Formatting LittleFS... " );
+      LittleFS.format();
+      Serial.println( "done.\n");
+      File config = LittleFS.open( APP_CONFIG_FILE, "w" );
+      config.write(0);
+      config.close();
+    }
+    else
+    {
+      LOG0( "Config-File <" APP_CONFIG_FILE "> found.\n\n" );
+    }
+    
+    LittleFS.end();
+  }
 
   showChipInfo();
 
