@@ -112,7 +112,7 @@ void appSetup()
     if ( timeinfo.tm_year >= 120 )
     {
       timeNotSet = false;
-      appStartTime = now;
+      appStartTime = now - (millis()/1000);
       break;
     }
     else
