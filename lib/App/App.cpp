@@ -16,7 +16,20 @@
 #include <LittleFS.h>
 
 time_t appStartTime = 0l;
+struct tm appTimeinfo;
 char appUptimeBuffer[64];
+char appLocalIpBuffer[32];
+char appDateTimeBuffer[32];
+
+const char *appDateTime()
+{
+  time_t now = time(nullptr);
+  localtime_r( &now, &appTimeinfo );
+  sprintf( appDateTimeBuffer, "%4d-%02d-%02d %02d:%02d:%02d", 
+  appTimeinfo.tm_year+1900, appTimeinfo.tm_mon+1, appTimeinfo.tm_mday,
+  appTimeinfo.tm_hour, appTimeinfo.tm_min, appTimeinfo.tm_sec );
+  return appDateTimeBuffer;
+}
 
 const char *appUptime()
 {
@@ -57,7 +70,7 @@ void appSetup()
   pinMode(POWER_LED, OUTPUT);
   digitalWrite(POWER_LED, LOW);
 
-  Serial.begin(74880); // Same rate as the esp8266 bootloader
+  Serial.begin(115200); // Same rate as the esp8266 bootloader
   delay(3000);         // wait for PlatformIO to start the serial monitor
 
   appShowHeader( Serial );
@@ -99,13 +112,13 @@ void appSetup()
   configTime( TIMEZONE, NTP_SERVER1, NTP_SERVER2, NTP_SERVER3 );
 
   wifiHandler.wifiInitStationMode();
-
+  strcpy( appLocalIpBuffer, WiFi.localIP().toString().c_str());
   TelnetStream.begin();
 
   bool timeNotSet = true;
   struct tm timeinfo;
 
-  for( int i=0; i<10; i++ )
+  for( int i=0; i<15; i++ )
   {
     time_t now = time(nullptr);
     localtime_r( &now, &timeinfo );
@@ -121,9 +134,7 @@ void appSetup()
     }
   }
 
-  Serial.printf( "Time              : %4d-%02d-%02d %02d:%02d:%02d\n",
-     timeinfo.tm_year+1900, timeinfo.tm_mon+1, timeinfo.tm_mday,
-     timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec );
+  Serial.printf( "Time              : %s\n", appDateTime());
   Serial.print("Timezone          : ");
   Serial.println(getenv("TZ"));
 
@@ -152,9 +163,7 @@ void appLoop()
 
     if ((currentTimestamp - timestamp) >= 2000) 
     {
-      Serial.printf("\r%d ", counter);
-      TLOG1( "counter=%d\n", counter );
-      counter++;
+      Serial.printf("\r%d ", counter++);
       timestamp = currentTimestamp;
 
       alterPin(POWER_LED);
@@ -166,6 +175,15 @@ void appLoop()
       if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi connection lost");
         wifiHandler.wifiInitStationMode();
+      }
+
+      char currentLocalIp[32];
+      strcpy( currentLocalIp, WiFi.localIP().toString().c_str());
+      if ( strcmp( appLocalIpBuffer, currentLocalIp ) != 0 )
+      {
+        Serial.printf( "\n[%s] Local IP-Address has changed to: %s\n", 
+          appDateTime(), currentLocalIp );
+        strcpy( appLocalIpBuffer, currentLocalIp );
       }
     }
 
