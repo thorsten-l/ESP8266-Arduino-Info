@@ -173,7 +173,7 @@ void appLoop()
 #endif
 
       if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("WiFi connection lost");
+        Serial.printf("\n[%s] WiFi connection lost!\n", appDateTime());
         wifiHandler.wifiInitStationMode();
       }
 
