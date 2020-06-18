@@ -10,7 +10,7 @@
 #define TLOG1( format, x) TelnetStream.printf( "(%ld) " format, millis(), x )
 
 #define APP_NAME "ESP8266 Arduino Info"
-#define APP_VERSION "0.8.4"
+#define APP_VERSION "0.9.0"
 #define APP_AUTHOR "Dr. Thorsten Ludewig <t.ludewig@gmail.com>"
 #define APP_CONFIG_FILE "/config.bin"
 
