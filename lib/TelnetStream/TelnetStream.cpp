@@ -8,7 +8,8 @@ void TelnetStreamClass::printHelp()
   TelnetStream.println( "\n\nHELP page\n"
     "h : this help\n"
     "b : print banner\n"
-    "s : json status\n"
+    "s : status\n"
+    "j : json status\n"
     "q,e : quit / exit \n"
     ); 
 }
@@ -58,9 +59,19 @@ void TelnetStreamClass::handle()
           printBanner();
           break;
 
+        case 'j':
+        case 'J':
+          TelnetStream.println(getJsonStatus(&client));
+          break;
+
         case 's':
         case 'S':
-          TelnetStream.println(getJsonStatus(&client));
+          {
+            TelnetStream.printf( "\nTime      : %s\n", appDateTime() );
+            TelnetStream.printf( "Uptime    : %s\n", appUptime() );
+            TelnetStream.printf( "Free Heap : %u\n", ESP.getFreeHeap() );
+            TelnetStream.println();
+          }
           break;
 
         case 'q':
