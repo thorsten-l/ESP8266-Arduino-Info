@@ -4,8 +4,9 @@ Prints out chip, sdk and wifi information using the *Arduino* framework.
 
 ## Compile requirements
 
-- rename or copy lib/App/App.hpp.sample to lib/App/App.hpp
+- edit `config/AppConfig.h` file
   and change &lt;your wifi ssid> and &lt;your wifi password>
+- you also can create a `private` directory and copy `AppConfig.h` into it and make your changes here. Git is ignoring the `private` directory, so you will not pushing your private settings to github.
 
 ## Console Output
 
