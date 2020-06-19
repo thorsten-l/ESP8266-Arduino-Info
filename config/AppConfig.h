@@ -1,6 +1,15 @@
 #ifndef __APP_CONFIG_H__
 #define __APP_CONFIG_H__
 
+/*
+  Sample application configuration file
+
+  To protect your credetials from accidentally pushing it to github,
+  copy this script into the 'private' folder.
+   
+  You have to create the 'private' folder in the project root by your own.
+*/
+
 #define OTA_HOSTNAME "esp8266-info"
 #define OTA_PASSWORD "otapass"
 
