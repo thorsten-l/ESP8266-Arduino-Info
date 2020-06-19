@@ -21,7 +21,7 @@
 
 language: python
 python:
-  - "2.7"
+  - "3.6"
 
 notifications:
   email:
@@ -38,7 +38,7 @@ cache:
 install:
   - pip install -U platformio
   - platformio update
-  - platformio upgrade --dev
+  - platformio upgrade
 
 script:
   - platformio run -e d1_mini -e d1_mini_lite -e d1_mini_pro -e shelly1
