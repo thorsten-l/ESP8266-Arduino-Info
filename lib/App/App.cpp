@@ -98,6 +98,11 @@ void appSetup()
       File config = LittleFS.open( APP_CONFIG_FILE, "w" );
       config.write(0);
       config.close();
+      WiFi.persistent(false);
+      WiFi.disconnect(true);
+      WiFi.mode( WIFI_OFF );
+      ESP.eraseConfig();
+      ESP.reset();
     }
     else
     {
