@@ -58,14 +58,23 @@ void WifiHandler::wifiInitStationMode() {
 
   LOG0("Starting Wifi in Station Mode (SSID=" WIFI_SSID ")\n");
   sprintf( hostname, "%s-%06x", OTA_HOSTNAME, ESP.getChipId() );
+  
   WiFi.persistent(false);
   WiFi.disconnect(true);
   delay(200);
   WiFi.mode(WIFI_STA);
   WiFi.hostname(hostname);
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
-  WiFi.begin(WIFI_SSID, WIFI_PASS, bestChannel );
 
+  if ( bestChannel != 0 )
+  {
+    WiFi.begin(WIFI_SSID, WIFI_PASS, bestChannel );
+  }
+  else
+  {
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
+  }
+  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   #ifdef WIFI_LED
