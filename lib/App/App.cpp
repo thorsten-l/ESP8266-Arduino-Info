@@ -33,8 +33,7 @@ const char *appDateTime()
 
 const char *appUptime()
 {
-  time_t now = time(nullptr);
-  time_t uptime = now - appStartTime;
+  time_t uptime = millis() / 1000;
   int uptimeSeconds = uptime % 60;
   int uptimeMinutes = (uptime / 60) % 60;
   int uptimeHours = (uptime / 3600) % 24;
@@ -67,8 +66,11 @@ void appSetup()
 #ifdef BUTTON_PIN
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 #endif
+
+#ifdef POWER_LED
   pinMode(POWER_LED, OUTPUT);
   digitalWrite(POWER_LED, LOW);
+#endif
 
   Serial.begin(115200); // Same rate as the esp8266 bootloader
   delay(3000);         // wait for PlatformIO to start the serial monitor
@@ -171,7 +173,9 @@ void appLoop()
       Serial.printf("\r%d ", counter++);
       timestamp = currentTimestamp;
 
+#ifdef POWER_LED
       alterPin(POWER_LED);
+#endif
 
 #ifdef BUTTON_PIN
   Serial.print( digitalRead(BUTTON_PIN));
