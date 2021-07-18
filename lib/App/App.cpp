@@ -21,6 +21,8 @@ char appUptimeBuffer[64];
 char appLocalIpBuffer[32];
 char appDateTimeBuffer[32];
 
+char *appBuffer;
+
 const char *appDateTime()
 {
   time_t now = time(nullptr);
@@ -58,6 +60,7 @@ void appShowHeader(Stream& out)
 void appSetup()
 {
   int bootDevice = getBootDevice();
+  appBuffer = NULL;
 
 #ifdef WIFI_LED
   pinMode(WIFI_LED, OUTPUT);
@@ -120,7 +123,7 @@ void appSetup()
 
   wifiHandler.wifiInitStationMode();
   strcpy( appLocalIpBuffer, WiFi.localIP().toString().c_str());
-  TelnetStream.begin();
+  Telnet.begin();
 
   bool timeNotSet = true;
   struct tm timeinfo;
@@ -158,7 +161,7 @@ void appSetup()
 
 void appLoop()
 {
-  static unsigned int counter = 0;
+  // static unsigned int counter = 0;
   static time_t timestamp = 0;
 
   ArduinoOTA.handle();
@@ -166,12 +169,13 @@ void appLoop()
   if (otaHandler.inProgress == false) 
   {
     time_t currentTimestamp = millis();
-    TelnetStream.handle();
+    Telnet.handle();
 
     if ((currentTimestamp - timestamp) >= 2000) 
     {
-      Serial.printf("\r%d ", counter++);
+      // Serial.printf("\r%d ", counter++);
       timestamp = currentTimestamp;
+      Serial.printf("free heap %d\n", ESP.getFreeHeap());
 
 #ifdef POWER_LED
       alterPin(POWER_LED);
