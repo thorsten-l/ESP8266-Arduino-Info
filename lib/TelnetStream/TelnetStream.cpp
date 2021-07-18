@@ -5,7 +5,7 @@ extern const char *getJsonStatus(WiFiClient *client);
 
 void TelnetStreamClass::printHelp()
 {
-  TelnetStream.println( "\n\nHELP page\n"
+  Telnet.println( "\n\nHELP page\n"
     "h : this help\n"
     "b : print banner\n"
     "s : status\n"
@@ -16,9 +16,9 @@ void TelnetStreamClass::printHelp()
 
 void TelnetStreamClass::printBanner()
 {
-  appShowHeader(TelnetStream);
-  TelnetStream.printf( "Uptime : %s\n", appUptime() );
-  TelnetStream.printf( "Client IP-Address = %s\n\n", 
+  appShowHeader(Telnet);
+  Telnet.printf( "Uptime : %s\n", appUptime() );
+  Telnet.printf( "Client IP-Address = %s\n\n", 
     client.remoteIP().toString().c_str());
 }
 
@@ -33,7 +33,7 @@ void TelnetStreamClass::begin() {
 
 void TelnetStreamClass::handle() 
 {
-  TelnetStream.available();
+  Telnet.available();
   
   if (client && client.connected()) 
   {  
@@ -43,9 +43,9 @@ void TelnetStreamClass::handle()
       printBanner();
     }
 
-    if ( TelnetStream.available() )
+    if ( Telnet.available() )
     {
-      int c = TelnetStream.read();
+      int c = Telnet.read();
 
       switch( c )
       {
@@ -61,16 +61,16 @@ void TelnetStreamClass::handle()
 
         case 'j':
         case 'J':
-          TelnetStream.println(getJsonStatus(&client));
+          Telnet.println(getJsonStatus(&client));
           break;
 
         case 's':
         case 'S':
           {
-            TelnetStream.printf( "\nTime      : %s\n", appDateTime() );
-            TelnetStream.printf( "Uptime    : %s\n", appUptime() );
-            TelnetStream.printf( "Free Heap : %u\n", ESP.getFreeHeap() );
-            TelnetStream.println();
+            Telnet.printf( "\nTime      : %s\n", appDateTime() );
+            Telnet.printf( "Uptime    : %s\n", appUptime() );
+            Telnet.printf( "Free Heap : %u\n", ESP.getFreeHeap() );
+            Telnet.println();
           }
           break;
 
@@ -141,4 +141,4 @@ void TelnetStreamClass::flush() {
   client.flush();
 }
 
-TelnetStreamClass TelnetStream(23);
+TelnetStreamClass Telnet(23);

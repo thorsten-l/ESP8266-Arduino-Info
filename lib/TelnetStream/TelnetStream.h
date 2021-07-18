@@ -33,6 +33,7 @@ private:
 
   boolean disconnected();
   boolean isConnected;
+  boolean initialized = false;
 
   void printHelp();
   void printBanner();
@@ -57,6 +58,6 @@ public:
 
 };
 
-extern TelnetStreamClass TelnetStream;
+extern TelnetStreamClass Telnet;
 
 #endif
