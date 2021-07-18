@@ -27,9 +27,9 @@ const char *appDateTime()
 {
   time_t now = time(nullptr);
   localtime_r( &now, &appTimeinfo );
-  sprintf( appDateTimeBuffer, "%4d-%02d-%02d %02d:%02d:%02d", 
+  sprintf( appDateTimeBuffer, "%4d-%02hd-%02hd %02hd:%02hd:%02hd", 
   appTimeinfo.tm_year+1900, appTimeinfo.tm_mon+1, appTimeinfo.tm_mday,
-  appTimeinfo.tm_hour, appTimeinfo.tm_min, appTimeinfo.tm_sec );
+  appTimeinfo.tm_hour, appTimeinfo.tm_min, appTimeinfo.tm_sec);
   return appDateTimeBuffer;
 }
 
@@ -40,9 +40,11 @@ const char *appUptime()
   int uptimeMinutes = (uptime / 60) % 60;
   int uptimeHours = (uptime / 3600) % 24;
   time_t uptimeDays = (uptime / 86400);
+
   sprintf( appUptimeBuffer, 
-    "%ld days, %d hours, %d minutes, %d seconds",
+    "%llu days, %d hours, %d minutes, %d seconds",
     uptimeDays, uptimeHours, uptimeMinutes, uptimeSeconds );
+
   return appUptimeBuffer;
 }
 

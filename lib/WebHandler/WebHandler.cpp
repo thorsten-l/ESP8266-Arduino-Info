@@ -46,6 +46,7 @@ const char *getJsonStatus(WiFiClient *client)
     "\"ctime\":\"%s\","
     "\"timezone\":\"%s\","
     "\"uptime\":\"%s\","
+    "\"dateTime\":\"%s\","
     "\"host_name\":\"%s.local\","
     "\"esp_full_version\":\"%s\","
     "\"esp_core_version\":\"%s\","
@@ -86,6 +87,7 @@ const char *getJsonStatus(WiFiClient *client)
     strtok( ctime(&now), "\n" ),
     TIMEZONE,
     appUptime(),
+    appDateTime(),
     wifiHandler.getHostname(), 
     ESP.getFullVersion().c_str(), 
     ESP.getCoreVersion().c_str(), 
