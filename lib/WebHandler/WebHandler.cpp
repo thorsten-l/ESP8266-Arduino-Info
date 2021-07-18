@@ -14,7 +14,6 @@ WebHandler webHandler;
 static ESP8266WebServer server(80);
 size_t fsTotalBytes;
 size_t fsUsedBytes;
-char buffer[3000];
 
 const char *getJsonStatus(WiFiClient *client)
 {
@@ -34,10 +33,16 @@ const char *getJsonStatus(WiFiClient *client)
     strncpy( remoteAddress, server.client().remoteIP().toString().c_str(), 31 );
   }
   
-  sprintf(buffer,
+  if ( appBuffer == NULL )
+  {
+    appBuffer = (char *)malloc(APP_BUFFER_SIZE);
+    memset(appBuffer, 0, APP_BUFFER_SIZE);
+  }
+
+  sprintf(appBuffer,
     "{"
     "\"millis\":%lu,"
-    "\"utc\":%lu,"
+    "\"utc\":%llu,"
     "\"ctime\":\"%s\","
     "\"timezone\":\"%s\","
     "\"uptime\":\"%s\","
@@ -117,7 +122,7 @@ const char *getJsonStatus(WiFiClient *client)
     remotePort
   );
 
-  return buffer;
+  return appBuffer;
 }
 
 WebHandler::WebHandler() 
@@ -143,8 +148,7 @@ void WebHandler::setup()
 
   server.on("/", []() {
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    String message(getJsonStatus(NULL));
-    server.send(200, "application/json", message );
+    server.send(200, "application/json", getJsonStatus(NULL));
   } );
 
   MDNS.addService("http", "tcp", 80);
